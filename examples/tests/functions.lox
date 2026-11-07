@@ -1,0 +1,38 @@
+// functions, recursion, closures
+// expect: 55
+// expect: 4
+// expect: 1 3 5
+
+fun fib(n) {
+  if (n < 2) return n;
+  return fib(n - 1) + fib(n - 2);
+}
+print fib(10);
+
+fun makeCounter() {
+  var count = 1;
+  fun inc() {
+    count = count + 1;
+    return count;
+  }
+  return inc;
+}
+var counter = makeCounter();
+counter();
+counter();
+print counter();
+
+fun printer(text) {
+  fun printTwice() {
+    print text;
+  }
+  return printTwice;
+}
+printer(1)();
+
+fun recurse(n) {
+  if (n <= 0) return nil;
+  print n * 2;
+  recurse(n - 1);
+}
+recurse(3);

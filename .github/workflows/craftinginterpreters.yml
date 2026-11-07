@@ -1,0 +1,89 @@
+name: Build Crafting Interpreters
+
+# Build & run both interpreters from the `craftinginterpreters` submodule (.gitmodules):
+#  - clox: the C bytecode virtual machine (final version, sources in c/)
+#  - jlox:  the Java tree-walk interpreter (final version, sources in java/)
+#
+# A demo Lox script is executed by both and its output is diffed against
+# examples/expected-output.txt, so a green run means "compiles and runs" for both.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  clox:
+    name: clox (C VM)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (with submodule)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Compile clox
+        run: |
+          gcc --version | head -n1
+          gcc -O2 -Wall -o build/clox craftinginterpreters/c/*.c
+
+      - name: Run demo.lox
+        run: |
+          ./build/clox examples/demo.lox > /tmp/actual-clox.txt
+          diff -u examples/expected-output.txt /tmp/actual-clox.txt
+          echo "clox demo output OK"
+
+      - name: Feature smoke tests
+        run: |
+          set -e
+          for f in examples/tests/*.lox; do
+            name="$(basename "$f" .lox)"
+            exp="examples/tests/${name}.expected"
+            ./build/clox "$f" > "/tmp/${name}.txt"
+            if diff -u "$exp" "/tmp/${name}.txt"; then
+              echo "PASS (clox) ${name}"
+            else
+              echo "FAIL (clox) ${name}" && exit 1
+            fi
+          done
+
+  jlox:
+    name: jlox (Java tree-walk)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (with submodule)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Compile jlox
+        run: |
+          javac -version
+          javac -d build/jlox craftinginterpreters/java/com/craftinginterpreters/lox/*.java
+
+      - name: Run demo.lox
+        run: |
+          java -cp build/jlox com.craftinginterpreters.lox.Lox examples/demo.lox > /tmp/actual-jlox.txt
+          diff -u examples/expected-output.txt /tmp/actual-jlox.txt
+          echo "jlox demo output OK"
+
+      - name: Feature smoke tests
+        run: |
+          set -e
+          for f in examples/tests/*.lox; do
+            name="$(basename "$f" .lox)"
+            exp="examples/tests/${name}.expected"
+            java -cp build/jlox com.craftinginterpreters.lox.Lox "$f" > "/tmp/${name}.txt"
+            if diff -u "$exp" "/tmp/${name}.txt"; then
+              echo "PASS (jlox) ${name}"
+            else
+              echo "FAIL (jlox) ${name}" && exit 1
+            fi
+          done

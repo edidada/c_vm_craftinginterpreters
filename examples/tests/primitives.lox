@@ -1,0 +1,28 @@
+// primitives: variables, arithmetic, comparison, if/while, strings
+// expect: 10
+// expect: -1
+// expect: false
+// expect: true
+// expect: Lox rocks!
+// expect: 3
+// expect: 7
+
+var a = 10;
+print a;
+print (1 + 2) * 3 - 4;
+print 1 > 2;
+print "abc" == "abc";
+print "Lox rocks!";
+
+var i = 0;
+var total = 0;
+while (i < 3) {
+  total = total + i;
+  i = i + 1;
+}
+print total;
+
+{
+  var a = 7;
+  print a;
+}

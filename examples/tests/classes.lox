@@ -1,0 +1,52 @@
+// classes, methods, this, inheritance, super, fields
+// expect: Rex is an animal (dog)
+// expect: 2
+// expect: Rex
+// expect: pet sound
+
+class Animal {
+  init(name) {
+    this.name = name;
+  }
+  describe() {
+    return this.name + " is an animal";
+  }
+}
+class Dog < Animal {
+  describe() {
+    return super.describe() + " (dog)";
+  }
+}
+var rex = Dog("Rex");
+print rex.describe();
+
+class Counter {
+  init() {
+    this.count = 0;
+  }
+  increment() {
+    this.count = this.count + 1;
+    return this.count;
+  }
+}
+var c = Counter();
+c.increment();
+print c.increment();
+
+print rex.name;
+
+class Nice {
+  init() {
+    this.name = "nice";
+  }
+  speak() {
+    return "sound";
+  }
+}
+class Pet < Nice {
+  speak() {
+    return "pet " + super.speak();
+  }
+}
+var pet = Pet();
+print pet.speak();

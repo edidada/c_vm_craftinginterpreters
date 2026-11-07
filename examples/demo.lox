@@ -1,0 +1,56 @@
+// Demo that exercises every major Lox feature.
+// Both jlox and clox must produce identical output (see expected-output.txt).
+
+// strings, booleans, nil
+print "Hello from Lox!";
+print true == true;
+print nil == nil;
+
+// arithmetic and precedence
+print 1 + 2 * 3;
+print (1 + 2) * 3;
+
+// functions and recursion
+fun fib(n) {
+  if (n < 2) return n;
+  return fib(n - 1) + fib(n - 2);
+}
+print fib(10);
+
+// closures
+fun makeCounter() {
+  var count = 1;
+  fun inc() {
+    count = count + 1;
+    return count;
+  }
+  return inc;
+}
+var counter = makeCounter();
+counter();
+counter();
+print counter();
+
+// classes, methods, this, inheritance, super
+class Animal {
+  init(name) {
+    this.name = name;
+  }
+  describe() {
+    return this.name + " is an animal";
+  }
+}
+class Dog < Animal {
+  describe() {
+    return super.describe() + " (dog)";
+  }
+}
+var rex = Dog("Rex");
+print rex.describe();
+
+// while loop and for loop
+var sum = 0;
+for (var i = 1; i <= 10; i = i + 1) {
+  sum = sum + i;
+}
+print sum;

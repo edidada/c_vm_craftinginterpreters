@@ -1,0 +1,9 @@
+Hello from Lox!
+true
+true
+7
+9
+55
+4
+Rex is an animal (dog)
+55
