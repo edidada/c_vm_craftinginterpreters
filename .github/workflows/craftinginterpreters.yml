@@ -26,6 +26,7 @@ jobs:
       - name: Compile clox
         run: |
           gcc --version | head -n1
+          mkdir -p build
           gcc -O2 -Wall -o build/clox craftinginterpreters/c/*.c
 
       - name: Run demo.lox
